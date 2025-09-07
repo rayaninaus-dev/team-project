@@ -1,0 +1,20 @@
+{
+  "turnaround": {
+    "Triage to Nurse": 8,
+    "Triage to Doctor": 24,
+    "Pathology Request to Result": 52,
+    "Imaging Request to Reported": 78,
+    "Admission Request to Bed": 95,
+    "Bed Allocation to Departure": 22
+  },
+  "losStats": {
+    "average": 4.6,
+    "median": 3.1
+  },
+  "admittedPatients": [
+    { "id": "patient-001", "name": "John Doe", "department": "Emergency", "bedWaitTime": 110 },
+    { "id": "patient-002", "name": "Jane Smith", "department": "Emergency", "bedWaitTime": 145 },
+    { "id": "patient-003", "name": "Michael Lee", "department": "Emergency", "bedWaitTime": 70 }
+  ]
+}
+
