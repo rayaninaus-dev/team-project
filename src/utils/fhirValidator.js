@@ -1,6 +1,6 @@
 /**
  * @file fhirValidator.js
- * @description FHIR数据验证工具，用于验证FHIR资源的完整性和正确性
+ * @description tools for validating FHIR resources and bundles
  */
 
 import { 
@@ -28,7 +28,7 @@ export const validateFHIRResource = (resource) => {
     };
   }
 
-  // 检查必需的字段
+  // check resourceType and id
   if (!resource.resourceType) {
     errors.push('MISSING resourceType FIELD');
   } else if (!Object.values(FHIR_RESOURCE_TYPES).includes(resource.resourceType)) {
@@ -107,28 +107,28 @@ const validatePatient = (patient, errors, warnings) => {
  * @param {Array} warnings - Warning array
  */
 const validateEncounter = (encounter, errors, warnings) => {
-  // 检查状态
+  // chechk status
   if (!encounter.status) {
     errors.push('Encounter resource must contain status FIELD');
   } else if (!Object.values(ENCOUNTER_STATUS).includes(encounter.status)) {
     warnings.push(`UNKNOWN encounter status: ${encounter.status}`);
   }
 
-  // 检查类别
+  // check class
   if (!encounter.class) {
     errors.push('Encounter resource must contain class FIELD');
   } else if (!encounter.class.code) {
     errors.push('Encounter class must contain code FIELD');
   }
 
-  // 检查主体引用
+  // check subject reference
   if (!encounter.subject || !encounter.subject.reference) {
     errors.push('Encounter resource must contain subject.reference FIELD');
   } else if (!encounter.subject.reference.startsWith('Patient/')) {
     warnings.push('subject.reference should reference Patient resource');
   }
 
-  // 检查时间段
+  // chechk period
   if (encounter.period) {
     if (encounter.period.start) {
       const startDate = new Date(encounter.period.start);
@@ -157,14 +157,14 @@ const validateEncounter = (encounter, errors, warnings) => {
  * @param {Array} warnings - Warning array
  */
 const validateObservation = (observation, errors, warnings) => {
-  // 检查状态
+  // check status
   if (!observation.status) {
     errors.push('Observation resource must contain status FIELD');
   } else if (!Object.values(OBSERVATION_STATUS).includes(observation.status)) {
     warnings.push(`UNKNOWN observation status: ${observation.status}`);
   }
 
-  // 检查代码
+  // chechk code
   if (!observation.code) {
     errors.push('Observation resource must contain code FIELD');
   } else if (!observation.code.coding || !Array.isArray(observation.code.coding)) {
@@ -173,17 +173,17 @@ const validateObservation = (observation, errors, warnings) => {
     errors.push('Observation code.coding cannot be empty');
   }
 
-  // 检查主体引用
+  // check subject reference
   if (!observation.subject || !observation.subject.reference) {
     errors.push('Observation resource must contain subject.reference FIELD');
   }
 
-  // 检查值
+  // check value
   if (!observation.valueQuantity && !observation.valueString && !observation.valueBoolean) {
     warnings.push('Observation should contain value FIELD');
   }
 
-  // 检查有效时间
+  // check effective date/time
   if (!observation.effectiveDateTime && !observation.effectivePeriod) {
     warnings.push('Observation should contain effectiveDateTime FIELD');
   }
@@ -255,12 +255,12 @@ export const validateFHIRResponse = (response) => {
     };
   }
 
-  // 检查HTTP状态码
+  // chechk HTTP status
   if (response.status && response.status >= 400) {
     errors.push(`HTTP ERROR: ${response.status}`);
   }
 
-  // 检查Content-Type
+  // check Content-Type
   if (response.headers && response.headers['content-type']) {
     const contentType = response.headers['content-type'];
     if (!contentType.includes('application/fhir+json') && !contentType.includes('application/json')) {

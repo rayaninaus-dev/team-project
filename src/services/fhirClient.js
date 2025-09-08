@@ -158,7 +158,7 @@ class FHIRClient {
     }
 
     try {
-      // 并行获取多个资源
+      // gain patients, encounters, and observations concurrently
       const [patients, encounters, observations] = await Promise.all([
         this.getPatients({ filters: { 'class': 'EMER' } }),
         this.getEncounters({ status: 'in-progress' }),
@@ -175,7 +175,7 @@ class FHIRClient {
   /**
    * Get encounter records
    * @param {object} params - Query parameters
-   * @returns {Promise<Array>} 就诊记录列表
+   * @returns {Promise<Array>} list of encounter records
    */
   async getEncounters(params = {}) {
     if (!this.isInitialized) {
